@@ -8,7 +8,8 @@ import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
+        id: '',
+        empno: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -28,28 +29,47 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="新規登録" />
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="id" value="ID" />
 
                     <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
+                        id="id"
+                        type="text"
+                        name="id"
+                        value={data.id}
                         className="mt-1 block w-full"
-                        autoComplete="name"
+                        autoComplete="id"
                         isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e) => setData('id', e.target.value)}
                         required
                     />
 
-                    <InputError message={errors.name} className="mt-2" />
+                    <InputError message={errors.id} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="empno" value="empno　※半角数字4桁" />
+
+                    <TextInput
+                        id="empno"
+                        type="text"
+                        name="empno"
+                        value={data.empno}
+                        className="mt-1 block w-full"
+                        autoComplete="empno"
+                        isFocused={true}
+                        onChange={(e) => setData('empno', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.empno} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="email" value="メールアドレス" />
 
                     <TextInput
                         id="email"
@@ -66,7 +86,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <InputLabel htmlFor="password" value="パスワード　※半角英数字のみ8桁以上" />
 
                     <TextInput
                         id="password"
@@ -83,7 +103,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <InputLabel htmlFor="password_confirmation" value="パスワード（確認用）" />
 
                     <TextInput
                         id="password_confirmation"
@@ -104,11 +124,11 @@ export default function Register() {
                         href={route('login')}
                         className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        Already registered?
+                        登録済みの方はこちら
                     </Link>
 
                     <PrimaryButton className="ml-4" disabled={processing}>
-                        Register
+                        新規登録
                     </PrimaryButton>
                 </div>
             </form>
