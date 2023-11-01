@@ -1,18 +1,21 @@
+// コメントに全角スペースは使えない
 {
     "compilerOptions": {
-        "allowJs": true,
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "jsx": "react-jsx",
-        "strict": true,
-        "isolatedModules": true,
-        "target": "ESNext",
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
+        "target": "es2022", // どのバージョンでjsを出力するか
+        "module": "es2022", // 出力するjsのモジュールの仕組み Laravelではフロント使用予定なのでcommonjsは使用しない
+        "outDir": "./dist", // コンパイルされたjsを作成するディレクトリ
+        "jsx": "react-jsx", // tsxファイルをjsxやjsにコンパイルする際の出力の形式を指定
+        "strict": true, // 複数のオプションを設定する
+        "moduleResolution": "node", // tscのモジュール解決の方法 新しい環境でやる場合はnode
+        "noUnusedLocals": true, // 宣言されたが使用されていない変数が存在する場合にコンパイルエラー
+        "noUnusedParameters": true, // 関数の作成時、定義しているのに中身のコードで使用されない場合にコンパイルエラー
+        "noImplicitReturns": true, // 関数内で条件分岐の条件によってreturnされないルートがある場合にコンパイルエラー
+        "noFallthroughCasesInSwitch": true, // switch文のcase内で、1行以上処理が存在しているにも関わらず脱出処理（breakやreturn）が無いものにエラー
+        "experimentalDecorators": true, // デコレーターの警告を削除する
+        "allowSyntheticDefaultImports": true, // エクスポートしないモジュールからのインポートを許可する。これでtypescriptでreactをインポートするときにimport React from 'react';を使えるようになる
         "paths": {
             "@/*": ["./resources/js/*"]
-        }
-    },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts"]
+        } // importパスの設定 resouces/js/を@で読み替えてくれる
+        },
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts"] // TypeScriptのソース配置場所
 }
