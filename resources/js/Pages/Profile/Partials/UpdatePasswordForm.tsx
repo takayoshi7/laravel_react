@@ -39,16 +39,14 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Update Password</h2>
-
                 <p className="mt-1 text-sm text-gray-600">
-                    Ensure your account is using a long, random password to stay secure.
+                    パスワードを変更することができます
                 </p>
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel htmlFor="current_password" value="Current Password" />
+                    <InputLabel htmlFor="current_password" value="現在のパスワード" />
 
                     <TextInput
                         id="current_password"
@@ -64,7 +62,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password" value="New Password" />
+                    <InputLabel htmlFor="password" value="新しいパスワード" />
 
                     <TextInput
                         id="password"
@@ -77,10 +75,13 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                     />
 
                     <InputError message={errors.password} className="mt-2" />
+                    <p className="mt-1 text-sm text-gray-600">
+                        ※安全を確保するために、長くてランダムなパスワードを設定してください
+                    </p>
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <InputLabel htmlFor="password_confirmation" value="パスワード再入力" />
 
                     <TextInput
                         id="password_confirmation"
@@ -104,7 +105,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">Saved.</p>
+                        <p className="text-sm text-gray-600">更新</p>
                     </Transition>
                 </div>
             </form>

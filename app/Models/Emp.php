@@ -18,7 +18,11 @@ class Emp extends Authenticatable
      * @var array<int, string>
      */
     protected $table = 'emp';
-    protected $fillable = ['id', 'password', 'remember_token', 'email', 'email_verified_at', 'empno', 'ename', 'job', 'mgr', 'hiredate', 'sal', 'comm', 'deptno', 'img1', 'img2', 'role'];
+    protected $fillable = ['id', 'password', 'remember_token',
+                            'email', 'email_verified_at',
+                            'empno', 'ename', 'job', 'mgr', 'hiredate', 'sal', 'comm', 'deptno',
+                            'img1', 'img2', 'role',
+                            'post_code', 'address1', 'address2', 'phone_number'];
 
     /**
      * The attributes that should be hidden for serialization.

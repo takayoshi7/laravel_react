@@ -8,13 +8,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * プロフィールページ表示
      */
     public function edit(Request $request): Response
     {
@@ -25,39 +26,61 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * 名前とメールアドレス変更
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        // フォームに入力された値をRequestsのProfileUpdateRequest.phpのルールでバリデートする
         $request->user()->fill($request->validated());
 
+        // メールアドレスの変更があった場合、email_verified_atカラムをnullにする
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
 
+        // DB更新
         $request->user()->save();
 
         return Redirect::route('profile.edit');
     }
 
     /**
-     * Delete the user's account.
+     * 郵便番号から住所取得
      */
-    public function destroy(Request $request): RedirectResponse
+    public function getAddress(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
+        $searchaddress = DB::table('addresses')->select('*')->where('zip', 'like', "%" . $request->input('changePostCode') . "%")->get();
+        var_dump($searchaddress);
+        // $encode = json_decode(json_encode($searchaddress), true);
 
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        // if (empty($encode)) {
+        //     $data = ['message' => '存在しない郵便番号です'];
+        //     return $data;
+        // } else {
+        //     return $searchaddress;
+        // }
     }
+
+
+
+    /**
+     * アカウント削除
+     */
+    // public function destroy(Request $request): RedirectResponse
+    // {
+    //     $request->validate([
+    //         'password' => ['required', 'current_password'],
+    //     ]);
+
+    //     $user = $request->user();
+
+    //     Auth::logout();
+
+    //     $user->delete();
+
+    //     $request->session()->invalidate();
+    //     $request->session()->regenerateToken();
+
+    //     return Redirect::to('/');
+    // }
 }

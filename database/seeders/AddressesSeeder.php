@@ -33,7 +33,7 @@ class AddressesSeeder extends Seeder
             }
 
             DB::table('addresses')->insert([
-                'zip' => (int) trim($row[0]),
+                'zip' => trim($row[0]),
                 'pref' => trim($row[1]),
                 'city' => trim($row[2]),
                 'town' => trim($row[3]),

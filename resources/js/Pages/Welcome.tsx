@@ -19,7 +19,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }: PageProps<
                     <div className="justify-center mt-10 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 dark:ring-1 dark:ring-inset dark:ring-white/5 shadow-2xl shadow-gray-500/20 dark:shadow-none flex">
                         {auth.user ? (
                             <Link
-                                href={route('dashboard')}
+                                href={route('employer')}
                                 className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                             >
                                 社員一覧

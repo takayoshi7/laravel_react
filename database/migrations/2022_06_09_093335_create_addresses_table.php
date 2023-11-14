@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->integer('zip');
+            $table->string('zip',7);
             $table->string('pref');
             $table->string('city');
             $table->string('town');

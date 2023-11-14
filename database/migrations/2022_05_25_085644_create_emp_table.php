@@ -28,10 +28,10 @@ return new class extends Migration
             $table->binary('img1')->nullable();
             $table->string('img2')->nullable();
             $table->integer('role')->default(2);
-            $table->integer('post_code')->nullable();
+            $table->string('post_code',7)->nullable();
             $table->string('address1',100)->nullable();
             $table->string('address2',100)->nullable();
-            $table->integer('phone_number')->nullable();
+            $table->string('phone_number', 11)->nullable();
             $table->timestamps();
         });
     }
