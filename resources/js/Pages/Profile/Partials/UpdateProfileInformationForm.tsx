@@ -3,10 +3,12 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
+import Modal from '@/Components/Modal';
+import SelectAddressModal from '@/Components/SelectAddressModal';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
-import { FormEventHandler } from 'react';
-import { PageProps } from '@/types';
+import { useState, FormEventHandler } from 'react';
+import { PageProps, addresses } from '@/types';
 import axios from "axios";
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }: { mustVerifyEmail: boolean, status?: string, className?: string }) {
@@ -21,31 +23,63 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
         address2: user.address2 ? user.address2 : "",
         phone_number: user.phone_number ? user.phone_number : "",
     });
+    const [getAddressError, setGetAddressError] = useState('');                 // 住所未取得エラー
+    const [confirmingAddress, setConfirmingAddress] = useState(false);          // 住所選択モーダル表示可否
+    const [selectAddress, setSelectAddress] = useState<addresses | null>(null); // 選択した住所情報
+    const [selectAddressError, setSelectAddressError] = useState('');           // 住所未選択エラー
 
-    // console.log(data);
-
+    /**
+     * フォームデータを送信してDB更新
+     * @param e イベント
+     */
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
         patch(route('profile.update', data));
     };
 
+    /**
+     * 郵便番号から住所取得
+     */
     const getAddress = () => {
         axios
-        .post('/getAddress', { changePostCode: data.post_code })
-        .then((res) => {
-            console.log(res);
-            // if (res.data.length == 1) {
-                // setData('address1', res.data);
-                // setData('address2', res.data);
-            // } else if (res.data.length > 1) {
-            //     selectPostCode(res.data);
-            // } else {
-            //     alert('ない');
-            // }
-        })
-        .catch((error) => alert("通信に失敗しました"));
+            .post('/getAddress', { changePostCode: data.post_code })
+            .then((res) => {
+                if (res.data.length == 1) {
+                    setData({ ...data, address1: res.data[0].pref + res.data[0].city + res.data[0].town, post_code: res.data[0].zip });
+                    setGetAddressError('');
+                } else if (res.data.length > 1) {
+                    setConfirmingAddress(true);
+                    setSelectAddress(res.data);
+                    setGetAddressError('');
+                } else {
+                    setGetAddressError(res.data.message);
+                    setData('address1', '');
+                }
+            })
+            .catch((error) => alert('通信に失敗しました'));
     }
+
+    /**
+     * 住所リストから住所を選択したら入力欄に入れる
+     * @param address 住所情報
+     */
+    const click = (address: addresses | null) => {
+        if (!address) {
+            setSelectAddressError('選択してください')
+            return;
+        }
+        setSelectAddressError('')
+        setData({ ...data, address1: address.pref + address.city + address.town, post_code: address.zip });
+        closeModal();
+    }
+
+    /**
+     * モーダルを閉じる
+     */
+        const closeModal = () => {
+            setConfirmingAddress(false);
+        };
 
     return (
         <section className={className}>
@@ -91,7 +125,11 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 <div>
                     <div className="flex items-end">
                         <InputLabel className="bottom-0" htmlFor="post_code" value="郵便番号" />
-                        <SecondaryButton className="h-7 ml-3 pr-1 pl-1 bg-indigo-200" onClick={getAddress}>住所取得</SecondaryButton>
+                        <SecondaryButton className="h-7 ml-3 pr-1 pl-1" onClick={getAddress}>住所取得</SecondaryButton>
+                        <Modal show={confirmingAddress} onClose={closeModal}>
+                            <SelectAddressModal list={selectAddress} error={selectAddressError} onClick={click}></SelectAddressModal>
+                        </Modal>
+                        <p className="address-error-message">{getAddressError}</p>
                     </div>
 
                     <TextInput
@@ -108,7 +146,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="address1" value="住所1" />
+                    <InputLabel htmlFor="address1" value="住所" />
 
                     <TextInput
                         id="address1"
@@ -123,7 +161,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="address2" value="住所2" />
+                    <InputLabel htmlFor="address2" value="以降の住所" />
 
                     <TextInput
                         id="address2"

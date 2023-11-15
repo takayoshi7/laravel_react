@@ -47,18 +47,21 @@ class ProfileController extends Controller
     /**
      * 郵便番号から住所取得
      */
-    public function getAddress(Request $request): RedirectResponse
+    // Laravel10.1以降は型指定不要
+    public function getAddress(Request $request)
     {
+        // ヒットした住所を取得
         $searchaddress = DB::table('addresses')->select('*')->where('zip', 'like', "%" . $request->input('changePostCode') . "%")->get();
-        var_dump($searchaddress);
-        // $encode = json_decode(json_encode($searchaddress), true);
+        // 住所を変換
+        $encode = json_decode(json_encode($searchaddress), true);
 
-        // if (empty($encode)) {
-        //     $data = ['message' => '存在しない郵便番号です'];
-        //     return $data;
-        // } else {
-        //     return $searchaddress;
-        // }
+        // 住所がヒットしなければエラーを返す
+        if (empty($encode)) {
+            $data = ['message' => '存在しない郵便番号です'];
+            return $data;
+        } else {
+            return $searchaddress;
+        }
     }
 
 
