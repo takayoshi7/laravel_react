@@ -2,7 +2,8 @@
 
 // ユーザー情報
 export interface User {
-    id: number;
+    id: string;
+    empno: number;
     ename: string;
     email: string;
     email_verified_at: string;

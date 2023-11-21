@@ -96,7 +96,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <PrimaryButton disabled={processing}>更新</PrimaryButton>
 
                     <Transition
                         show={recentlySuccessful}
@@ -105,7 +105,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">更新</p>
+                        <p className="text-sm text-gray-600">更新しました</p>
                     </Transition>
                 </div>
             </form>

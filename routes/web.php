@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/getAddress', [ProfileController::class, 'getAddress'])->name('getAddress');
+    Route::post('/uploadImage', [ProfileController::class, 'uploadImage'])->name('uploadImage');
+    Route::post('/deleteImage', [ProfileController::class, 'deleteImage'])->name('deleteImage');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

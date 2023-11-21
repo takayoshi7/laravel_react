@@ -4,6 +4,25 @@
         display: flex;
         .single-image-area {
             text-align: center;
+            .profileImage {
+                width: 15rem;
+                height: 13rem;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 0.5rem;
+                border: gray double 3px;
+                border-radius: 15px;
+                position: relative;
+                img {
+                    object-fit: contain; // 枠内に見切れないサイズで画像を表示
+                }
+                .deleteImageButton {
+                    // 画像の上にボタンを配置
+                    position: absolute;
+                    bottom: 5px;
+                    height: 2px;
+                }
+            }
         }
     }
 }

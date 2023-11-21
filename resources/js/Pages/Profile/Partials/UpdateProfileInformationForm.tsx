@@ -12,6 +12,7 @@ import { PageProps, addresses } from '@/types';
 import axios from "axios";
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }: { mustVerifyEmail: boolean, status?: string, className?: string }) {
+    // ログインユーザー情報
     const user = usePage<PageProps>().props.auth.user;
 
     // errors:エラー確認　processing:フォーム送信チェック　recentlySuccessful:一時的な送信成功設定

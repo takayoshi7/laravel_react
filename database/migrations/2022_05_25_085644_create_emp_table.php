@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -25,7 +26,6 @@ return new class extends Migration
             $table->integer('sal')->nullable();
             $table->integer('comm')->nullable();
             $table->integer('deptno')->nullable();
-            $table->binary('img1')->nullable();
             $table->string('img2')->nullable();
             $table->integer('role')->default(2);
             $table->string('post_code',7)->nullable();
@@ -34,6 +34,11 @@ return new class extends Migration
             $table->string('phone_number', 11)->nullable();
             $table->timestamps();
         });
+
+        // 標準だと対応不可なLONGBLOBでのカラム作成
+        DB::statement('ALTER TABLE emp ADD img1 LONGBLOB');
+        // img1カラムの位置をdeptnoの後に変更
+        DB::statement("ALTER TABLE emp MODIFY COLUMN img1 LONGBLOB AFTER deptno");
     }
 
     /**

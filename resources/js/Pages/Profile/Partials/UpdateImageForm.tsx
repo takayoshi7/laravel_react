@@ -1,53 +1,25 @@
 import PrimaryButton from '@/Components/PrimaryButton';
+import SecondaryButton from '@/Components/SecondaryButton';
 import InputImage from '@/Components/InputImage';
 import { useGetImageUrl } from "@/hooks/useGetImageUrl";
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
-import { FormEventHandler, useState, useRef } from 'react';
+import { useState } from 'react';
 import { PageProps } from '@/types';
+import axios from "axios";
 
-const image1: string = "image1";
-const image2: string = "image2";
+const image1: string = 'image1';
+const image2: string = 'image2';
 
 export default function UpdateImage({className = ''}: {className?: string}) {
     // ログインユーザー情報
     const user = usePage<PageProps>().props.auth.user;
-    // 画像ファイル取得・更新関数
-    const [img1, setImg1] = useState<string | null>(user.img1);
-    const [img2, setImg2] = useState<string | null>(user.img2);
-    const [imageFile1, setImageFile1] = useState<File | null>(null);
-    const [imageFile2, setImageFile2] = useState<File | null>(null);
-
-    /**
-     * 画像更新
-     * @param e イベント情報
-     */
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-        console.log('UpdateImage');
-
-        // patch(route('profile.update'));
-    };
-
-        // 画像プレビューフィールド
-        const fileInputRef1 = useRef<HTMLInputElement>(null);
-        const fileInputRef2 = useRef<HTMLInputElement>(null);
-
-    /**
-     * 更新画像選択
-     * @param e イベント情報
-     * @param selected 画像番号
-     */
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, selected: string) => {
-        if (e.currentTarget?.files && e.currentTarget.files[0]) {
-            const targetFile = e.currentTarget.files[0];
-            if (selected == image1) {
-                setImageFile1(targetFile);
-            } else {
-                setImageFile2(targetFile);
-            }
-        }
-    };
+    
+    const [img1, setImg1] = useState<string | null>(user.img1);         // 画像1
+    const [img2, setImg2] = useState<string | null>(user.img2);         // 画像2
+    const [uploadSuccess, setUploadSuccess] = useState<boolean>(false); // 更新時文言表示可否
+    const [imageFile1, setImageFile1] = useState<File | null>(null);    // プレビュー画像1
+    const [imageFile2, setImageFile2] = useState<File | null>(null);    // プレビュー画像2
 
     /**
      * 画像が選択されたら、画像URLを作成
@@ -57,25 +29,105 @@ export default function UpdateImage({className = ''}: {className?: string}) {
     const { imageUrl2 } = useGetImageUrl({ file: imageFile2 }, image2);
 
     /**
-     * 選択した画像をキャンセルしたらプレビュー削除
+     * 画像プレビュー
+     * @param files 画像情報
+     * @param selected 画像番号
+     */
+    const handleDropFiles = (files: File[], selected: string) => {
+        const targetFile = files[0];
+        if (selected == image1) {
+            setImageFile1(targetFile);
+        } else {
+            setImageFile2(targetFile);
+        }
+    }
+
+    /**
+     * キャンセルをクリックしたらプレビュー削除
      * @param selected 画像番号
      */
     const handleClickCancelButton = (selected: string) => {
-        console.log(selected);
         if (selected == image1) {
             setImageFile1(null);
-            // <input />タグの値をリセット
-            if (fileInputRef1.current) {
-                fileInputRef1.current.value = "";
-            }
         } else {
             setImageFile2(null);
-            // <input />タグの値をリセット
-            if (fileInputRef2.current) {
-                fileInputRef2.current.value = "";
-            }
         }
     };
+
+    /**
+     * 画像更新
+     */
+    const uploadImage = () => {
+        // ヘッダー定義
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        };
+
+        // Formデータ作成
+        const formData = new FormData();
+        formData.append('empno', String(user.empno));
+
+        // 画像データ追加
+        if (imageFile1) {
+            formData.append("file1", imageFile1);
+            if (imageFile2) {
+                formData.append("file2", imageFile2);
+            }
+        } else if (imageFile2) {
+            formData.append("file2", imageFile2);
+        } else {
+            return;
+        }
+
+        axios
+            .post('/uploadImage', formData, config)
+            .then((res) => {
+                // [更新しました]表示
+                setUploadSuccess(true);
+                // 通信成功したら更新した画像表示を変更
+                if (res.data.message == 'success') {
+                    if (res.data.data.image1) {
+                        setImg1(res.data.data.image1);
+                        setImageFile1(null);
+                        if (res.data.data.image2 != null) {
+                            setImg2(res.data.data.image2);
+                            setImageFile2(null);
+                        }
+                    } else {
+                        setImg2(res.data.data.image2);
+                        setImageFile2(null);
+                    }
+                }
+                // [更新しました]2秒後に非表示
+                setTimeout(() => setUploadSuccess(false), 2000);
+            })
+            .catch((error) => alert('通信に失敗しました'));
+    }
+
+    /**
+     * 画像削除
+     */
+    const deleteImage = (select: string) => {
+        const selectData = {
+            'empno': String(user.empno),
+            'select': select,
+        }
+
+        axios
+            .post('/deleteImage', selectData)
+            .then((res) => {
+                if (res.data.message == 'success') {
+                    if (res.data.select == image1) {
+                        setImg1(null);
+                    } else {
+                        setImg2(null);
+                    }
+                }
+            })
+            .catch((error) => alert('通信に失敗しました'));
+        }
 
     return (
         <section className={className}>
@@ -85,46 +137,58 @@ export default function UpdateImage({className = ''}: {className?: string}) {
                 </p>
             </header>
 
-            <form onSubmit={submit} className="mt-6 space-y-6">
+            <form className="mt-6 space-y-6">
                 <div className="all-image-area">
                     <div className="single-image-area">
                         {img1 ? (
-                            <div>
-                                <img src={img1} />
+                            <div className="profileImage">
+                                <img src={'data:image/png;base64,' + img1} />
+                                <SecondaryButton className="deleteImageButton" onClick={() =>deleteImage(image1)}>削除</SecondaryButton>
                             </div>
                         ) : (
-                            <div>
-                                <img src="https://mag.sendenkaigi.com/brain/201403/images/116_01.jpg" />
+                            <div className="profileImage">
+                                <img src="storage/no_image.jpg" />
                             </div>
                         )}
-                        <InputImage ref={fileInputRef1} id="image1" imageUrl={imageUrl1} onChange={(e) => handleFileChange(e, image1)} onClick={() => handleClickCancelButton(image1)} />
+                        <InputImage
+                            id={image1}
+                            imageUrl={imageUrl1}
+                            onClick={() => handleClickCancelButton(image1)}
+                            onDropFiles={handleDropFiles}
+                        />
                     </div>
                     <div className="single-image-area ml-5">
                         {img2 ? (
-                            <div>
+                            <div className="profileImage">
                                 <img src={img2} />
+                                <SecondaryButton className="deleteImageButton" onClick={() =>deleteImage(image2)}>削除</SecondaryButton>
                             </div>
                         ) : (
-                            <div>
-                                <img src="https://mag.sendenkaigi.com/brain/201403/images/116_01.jpg" />
+                            <div className="profileImage">
+                                <img src="storage\no_image.jpg" />
                             </div>
                         )}
-                        <InputImage ref={fileInputRef2} id="image2" imageUrl={imageUrl2} onChange={(e) => handleFileChange(e, image2)} onClick={() => handleClickCancelButton(image2)} />
+                        <InputImage
+                            id={image2}
+                            imageUrl={imageUrl2}
+                            onClick={() => handleClickCancelButton(image2)}
+                            onDropFiles={handleDropFiles}
+                        />
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton>更新</PrimaryButton>
+                    <PrimaryButton type="button" onClick={uploadImage}>更新</PrimaryButton>
 
-                    {/* <Transition
-                        show={recentlySuccessful}
+                    <Transition
+                        show={uploadSuccess}
                         enter="transition ease-in-out"
                         enterFrom="opacity-0"
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
                         <p className="text-sm text-gray-600">更新しました</p>
-                    </Transition> */}
+                    </Transition>
                 </div>
             </form>
         </section>
