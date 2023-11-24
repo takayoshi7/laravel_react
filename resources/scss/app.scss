@@ -32,3 +32,21 @@
     font-size: small;
     margin-left: 1rem;
 }
+
+.emp-table {
+    border: solid 1px;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    tr {
+        border: solid 1px;
+        th {
+            border: solid 1px;
+        }
+        td {
+            border: solid 1px;
+            text-align: center;
+        }
+    }
+}

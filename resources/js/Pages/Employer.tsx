@@ -1,23 +1,55 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { PageProps } from '@/types';
-import React from 'react'
+import { User, PageProps } from '@/types';
+import React, { useState, useEffect} from 'react'
 
-const Employer = ({ auth }: PageProps) => {
+const Employer = ({ auth, empData }: PageProps<{empData: {data: User}}>) => {
+    const [empMap, setEmpMap] = useState(empData.data); 
+    console.log(empData.data);
+
+
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">従業員一覧</h2>}
         >
-            <Head title="Dashboard" />
+            <Head title="従業員一覧" />
 
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">You're logged in!</div>
-                    </div>
-                </div>
-            </div>
+            <table className="emp-table">
+                <thead>
+                    <tr>
+                        <th>ユーザＩＤ</th>
+                        <th>社員コード</th>
+                        <th>社員名</th>
+                        <th>職種</th>
+                        <th>上司コード</th>
+                        <th>入社日</th>
+                        <th>給与</th>
+                        <th>歩合</th>
+                        <th>部署コード</th>
+                        <th>役割</th>
+                    </tr>
+                </thead>
+                {empMap.map((value) => {
+                    return (
+                        <tbody key={value.id}>
+                            <tr>
+                                <td>{value.id}</td>
+                                <td>{value.empno}</td>
+                                <td>{value.ename}</td>
+                                <td>{value.job}</td>
+                                <td>{value.mgr}</td>
+                                <td>{value.hiredate}</td>
+                                <td>{value.sal}</td>
+                                <td>{value.comm}</td>
+                                <td>{value.deptno}</td>
+                                <td>{value.name}</td>
+                            </tr>
+                        </tbody>
+                    );
+                })}
+            </table>
         </AuthenticatedLayout>
     )
 };
