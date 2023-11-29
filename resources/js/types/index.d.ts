@@ -29,6 +29,15 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     };
 };
 
+// ユーザー情報
+export interface Dept {
+    map(arg0: (value: Dept) => import("react/jsx-runtime").JSX.Element): any;
+    deptno: number;
+    dname: string;
+    loc: string;
+    sort: number;
+}
+
 // 住所情報
 export type addresses = {
     map(arg0: (value: any) => import("react/jsx-runtime").JSX.Element): unknown;
