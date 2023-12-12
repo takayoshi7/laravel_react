@@ -7,7 +7,7 @@ import Modal from '@/Components/Modal';
 import SelectAddressModal from '@/Components/SelectAddressModal';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
-import { useState, FormEventHandler } from 'react';
+import { useState, useEffect, FormEventHandler } from 'react';
 import { PageProps, addresses } from '@/types';
 import axios from "axios";
 
@@ -24,10 +24,17 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
         address2: user.address2 ? user.address2 : "",
         phone_number: user.phone_number ? user.phone_number : "",
     });
-    const [getAddressError, setGetAddressError] = useState('');                 // 住所未取得エラー
-    const [confirmingAddress, setConfirmingAddress] = useState(false);          // 住所選択モーダル表示可否
-    const [selectAddress, setSelectAddress] = useState<addresses | null>(null); // 選択した住所情報
-    const [selectAddressError, setSelectAddressError] = useState('');           // 住所未選択エラー
+    const [ getAddressError, setGetAddressError ] = useState('');                 // 住所未取得エラー
+    const [ confirmingAddress, setConfirmingAddress ] = useState(false);          // 住所選択モーダル表示可否
+    const [ selectAddress, setSelectAddress ] = useState<addresses | null>(null); // 選択した住所情報
+    const [ selectAddressError, setSelectAddressError ] = useState('');           // 住所未選択エラー
+
+    // 住所未取得エラー表示時、郵便番号欄を空欄にしたらエラーを消す
+    useEffect(() => {
+        if (data.post_code == '') {
+            setGetAddressError('');
+        }
+    }, [data.post_code])
 
     /**
      * フォームデータを送信してDB更新
@@ -78,9 +85,9 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     /**
      * モーダルを閉じる
      */
-        const closeModal = () => {
-            setConfirmingAddress(false);
-        };
+    const closeModal = () => {
+        setConfirmingAddress(false);
+    };
 
     return (
         <section className={className}>
@@ -100,7 +107,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         value={data.ename}
                         onChange={(e) => setData('ename', e.target.value)}
                         required // 必須チェック
-                        isFocused
                         autoComplete="ename"
                     />
 
@@ -138,7 +144,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         className="mt-1 block w-full"
                         value={data.post_code}
                         onChange={(e) => setData('post_code', e.target.value.replace(/-/g, ""))}
-                        isFocused
                         autoComplete="post_code"
                         pattern="^\d{7}$"
                     />
@@ -154,7 +159,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         className="mt-1 block w-full"
                         value={data.address1}
                         onChange={(e) => setData('address1', e.target.value)}
-                        isFocused
                         autoComplete="address1"
                     />
 
@@ -169,7 +173,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         className="mt-1 block w-full"
                         value={data.address2}
                         onChange={(e) => setData('address2', e.target.value)}
-                        isFocused
                         autoComplete="address2"
                     />
 
@@ -184,7 +187,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         className="mt-1 block w-full"
                         value={data.phone_number}
                         onChange={(e) => setData('phone_number', e.target.value.replace(/-/g, ""))}
-                        isFocused
                         autoComplete="phone_number"
                         pattern="^\d{10,11}$"
                     />

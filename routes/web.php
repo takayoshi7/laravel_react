@@ -28,6 +28,10 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/employer', [EmployerController::class, 'employer'])->name('employer');
+    Route::post('/uploadTableImage', [EmployerController::class, 'uploadTableImage'])->name('uploadTableImage');
+    Route::post('/createTableRow', [EmployerController::class, 'createTableRow'])->name('createTableRow');
+    Route::post('/uploadTableRow', [EmployerController::class, 'uploadTableRow'])->name('uploadTableRow');
+    Route::post('/deleteTableRow', [EmployerController::class, 'deleteTableRow'])->name('deleteTableRow');
 });
 
 Route::middleware('auth')->group(function () {

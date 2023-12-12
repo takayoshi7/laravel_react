@@ -55,6 +55,60 @@
     }
 }
 
+.create-emp {
+    border: solid 1px;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    tr {
+        th {
+            border: solid 1px;
+            background-color: lightgray;
+        }
+        td {
+            border: solid 1px;
+        }
+    }
+}
+
+.edit-emp {
+    border: solid 1px;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    tr {
+        th {
+            border: solid 1px;
+            background-color: lightgray;
+        }
+        td {
+            border: solid 1px;
+        }
+    }
+}
+
+.delete-emp {
+    border: solid 1px;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    tr {
+        th {
+            border: solid 1px;
+            background-color: lightgray;
+        }
+        td {
+            border: solid 1px;
+        }
+    }
+}
+
 .pagination {
     display: flex;
     justify-content: center;

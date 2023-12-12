@@ -16,15 +16,15 @@ class RoleSeeder extends Seeder
         DB::table('roles')->insert([
             [
                 'id' => '1',
-                'name' => '管理者',
+                'rname' => '管理者',
             ],
             [
                 'id' => '10',
-                'name' => '役員',
+                'rname' => '役員',
             ],
             [
                 'id' => '20',
-                'name' => '人事',
+                'rname' => '人事',
             ],
         ]);
     }
